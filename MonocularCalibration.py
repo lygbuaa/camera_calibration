@@ -12,7 +12,7 @@ input_images = "./fov_1920_1080/*.jpg"
 # chessboard inner corners, (width, height)
 chessboard = (21, 14)
 # chessboard square side lenght, mm
-square_side_lenght = 70.0
+square_side_lenght = 1 #chessboard square side lenght not necessary in monocular calibration
 
 class MonocularCalibration:
     CRITERIA = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 100, 0.001)
