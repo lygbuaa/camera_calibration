@@ -8,9 +8,9 @@ sudo pip install opencv-python
 import numpy as np
 import cv2, sys, time, json, sys, os, glob
 
-input_images = "./fov_1920_1080/*.jpg"
+input_images = "./640_480/*.jpg"
 # chessboard inner corners, (width, height)
-chessboard = (21, 14)
+chessboard = (29, 19) #(21, 14)
 # chessboard square side lenght, mm
 square_side_lenght = 1 #chessboard square side lenght not necessary in monocular calibration
 
@@ -52,8 +52,9 @@ class MonocularCalibration:
                 self.imgpoints.append(corners)
                 # show corners
                 cv2.drawChessboardCorners(img, chessboard, corners, ret)
+		cv2.namedWindow('findCorners', cv2.WINDOW_NORMAL)
                 cv2.imshow('findCorners', img)
-                cv2.waitKey(30)
+                cv2.waitKey(-1)
         cv2.destroyAllWindows()
         retval, self.cameraMatrix, self.distCoeffs, rvecs, tvecs = cv2.calibrateCamera(self.objpoints, self.imgpoints, gray.shape[::-1], None, None)
         print("overall RMS re-projection error: {}".format(retval))
@@ -84,7 +85,7 @@ if __name__ == '__main__':
         wrapper.DoCalib()
         time.sleep(1)
         #pick the 7th image, undistort & show
-        wrapper.UndistortImage(wrapper.GetImageByIndex(7))
+        wrapper.UndistortImage(wrapper.GetImageByIndex(0))
     except KeyboardInterrupt:
         cv2.destroyAllWindows()
         print('break by user.')
