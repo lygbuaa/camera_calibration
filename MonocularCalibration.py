@@ -15,7 +15,7 @@ chessboard = (29, 19) #(21, 14)
 square_side_lenght = 1 #chessboard square side lenght not necessary in monocular calibration
 
 class MonocularCalibration:
-    CRITERIA = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 100, 0.001)
+    CRITERIA = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 100, 0.01)
     objpoints = []
     imgpoints = []
     images = []
@@ -47,7 +47,7 @@ class MonocularCalibration:
             ret, corners = cv2.findChessboardCorners(gray, chessboard, None)
             # save corners
             if ret == True:
-                cv2.cornerSubPix(gray, corners, (11,11), (-1,-1), self.CRITERIA)
+                cv2.cornerSubPix(gray, corners, (5,5), (-1,-1), self.CRITERIA)
                 self.objpoints.append(self.objp)
                 self.imgpoints.append(corners)
                 # show corners
