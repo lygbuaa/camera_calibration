@@ -8,7 +8,7 @@ sudo pip install opencv-python
 import numpy as np
 import cv2, sys, time, json, sys, os, glob
 
-input_images = "./640_480/*.jpg"
+input_images = "./1280_720/*.jpg"
 # chessboard inner corners, (width, height)
 chessboard = (29, 19) #(21, 14)
 # chessboard square side lenght, mm
