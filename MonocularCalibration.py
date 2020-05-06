@@ -8,7 +8,7 @@ sudo pip install opencv-python
 import numpy as np
 import cv2, sys, time, json, sys, os, glob
 
-input_images = "./1280_720/*.jpg"
+input_images = "./1920_1080/*.jpg"
 # chessboard inner corners, (width, height)
 chessboard = (29, 19) #(21, 14)
 # chessboard square side lenght, mm
@@ -71,8 +71,11 @@ class MonocularCalibration:
     def UndistortImage(self, fname):
         img = cv2.imread(fname)
         h, w = img.shape[:2]
+        self.distCoeffs[0][4] = 0 #discard k3
+        #alpha=1, keep all the original image pixels
         newCameraMatrix, roi=cv2.getOptimalNewCameraMatrix(self.cameraMatrix, self.distCoeffs, (w,h), 1, (w,h))
         dst = cv2.undistort(img, self.cameraMatrix, self.distCoeffs, None, newCameraMatrix)
+        print("valid pixel roi: {}".format(roi))
         cv2.imshow('undistort', dst)
         cv2.waitKey(-1)
         #cv2.destroyAllWindows()
