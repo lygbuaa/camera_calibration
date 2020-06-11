@@ -21,6 +21,8 @@ class MonocularCalibration:
     images = []
     cameraMatrix = []
     distCoeffs = []
+    map1 = None
+    map2 = None
 
     def __init__(self):
         print("MonocularCalibration init")
@@ -52,7 +54,7 @@ class MonocularCalibration:
                 self.imgpoints.append(corners)
                 # show corners
                 cv2.drawChessboardCorners(img, chessboard, corners, ret)
-		cv2.namedWindow('findCorners', cv2.WINDOW_NORMAL)
+                cv2.namedWindow('findCorners', cv2.WINDOW_NORMAL)
                 cv2.imshow('findCorners', img)
                 cv2.waitKey(-1)
         cv2.destroyAllWindows()
@@ -76,9 +78,24 @@ class MonocularCalibration:
         newCameraMatrix, roi=cv2.getOptimalNewCameraMatrix(self.cameraMatrix, self.distCoeffs, (w,h), 1, (w,h))
         dst = cv2.undistort(img, self.cameraMatrix, self.distCoeffs, None, newCameraMatrix)
         print("valid pixel roi: {}".format(roi))
+        cv2.namedWindow('undistort', cv2.WINDOW_NORMAL)
         cv2.imshow('undistort', dst)
         cv2.waitKey(-1)
-        #cv2.destroyAllWindows()
+        cv2.destroyAllWindows()
+
+    def UndistortImageRT(self, fname):
+        img = cv2.imread(fname)
+        self.distCoeffs[0][4] = 0 #discard k3
+        h, w = img.shape[:2]
+        newCameraMatrix = np.array([[1200, 0, 960],
+                            [0, 1080, 540],
+                            [0,  0,    1]])
+        self.map1, self.map2 = cv2.initUndistortRectifyMap(self.cameraMatrix, self.distCoeffs, np.eye(3), newCameraMatrix, (w,h), cv2.CV_16SC2)
+        dst = cv2.remap(img, self.map1, self.map2, cv2.INTER_LINEAR)
+        cv2.namedWindow('undistort', cv2.WINDOW_NORMAL)
+        cv2.imshow('undistort', dst)
+        cv2.waitKey(-1)
+        cv2.destroyAllWindows()
 
 if __name__ == '__main__':
     os.system("reset")
@@ -88,7 +105,8 @@ if __name__ == '__main__':
         wrapper.DoCalib()
         time.sleep(1)
         #pick the 7th image, undistort & show
-        wrapper.UndistortImage(wrapper.GetImageByIndex(0))
+        wrapper.UndistortImageRT(wrapper.GetImageByIndex(0))
+
     except KeyboardInterrupt:
         cv2.destroyAllWindows()
         print('break by user.')
